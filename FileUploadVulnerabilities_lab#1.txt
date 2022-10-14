@@ -1,0 +1,13 @@
+lab1: Remote code execution via web shell upload
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-remote-code-execution-via-web-shell-upload
+
+1.application is a vulnerable with image upload 
+2.create php file(exp.php) and write to it the code that get the asked path(/home/carlos/secret)
+	exp.php: <?php echo file_get_contents('/home/carlos/secret'); ?>
+3.upload file.php	
+4.exfiltrate the running result of file.php 
+	4.1.go to home page, then click on view post button 
+	4.2.go to http history in burp proxy
+	4.3.check files/avatars/webShell.php  request, the flags shows in its response 
+	4.4submit the flag by submit solution button
+	

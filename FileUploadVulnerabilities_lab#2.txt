@@ -1,0 +1,14 @@
+lab2: Web shell upload via Content-Type restriction bypass
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-web-shell-upload-via-content-type-restriction-bypass
+
+1.application is a vulnerable with image upload 
+2.create php file(exp.php) and write to it the code that get the asked path(/home/carlos/secret)
+	exp.php: <?php echo file_get_contents('/home/carlos/secret'); ?>
+3.open burp proxy >> intercept on , then iupload file.php >> send the request to repeater
+4.in repeater, the request msg contains Content-Type(header): application/x-php , change it to image/jpeg then send the request 
+
+5.exfiltrate the running result of file.php 
+	5.1.go to home page, then click on view post button 
+	5.2.go to http history in burp proxy
+	5.3.check files/avatars/webShell.php  request, the flags shows in its response 
+6.submit the flag by submit solution button

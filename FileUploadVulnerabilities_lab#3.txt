@@ -1,0 +1,20 @@
+lab3: Web shell upload via path traversal
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-web-shell-upload-via-path-traversal
+	goal path : /home/carlos/secret
+	current path : /files/avatars
+	some sites prevents running scripts in the directories that recieves user-supplied files, so we upload the exp file in diffrent directory to can run it. 
+	the current path(that recieves user-supplied files): /files/avatars
+	so we back to the previos folder(files), then run the file
+
+
+1.application is a vulnerable with image upload 
+2.create php file(webShell.php) and write to it the code that get the asked path(/home/carlos/secret)
+	webShell.php: <?php echo file_get_contents('/home/carlos/secret'); ?>
+3.open burp proxy >> intercept on , then iupload file.php >> send the request to repeater
+4.
+5.go to repeater, in the request msg change filename from webShell.php to ../webShell.php. 
+6.send the request. msg shows in the response: "the file avatars/webShell.php has been uploaded." This Implies that the server is stripping the directory traversal sequence from the file name.
+
+7.apply url encoding on (../) ==> %2e%2e%2f, so filename=%2e%2e%2fwebShell.php then send the request. in the respnse, msg shows: "The file avatars/../webShell.php has been uploaded." this means that the file already uploaded in the files directory
+8.go to home page to refresh its result. go to the http hestory, then check response of the GET files/webShell.php ==> the sercret shows
+9. submit the secret in the lab banner
