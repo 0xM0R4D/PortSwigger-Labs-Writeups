@@ -1,0 +1,14 @@
+lab5: Web shell upload via obfuscated file extension
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-web-shell-upload-via-obfuscated-file-extension
+
+1.create php file(webShell.php) and write to it the code that get the asked path(/home/carlos/secret)
+	webShell.php: <?php echo file_get_contents('/home/carlos/secret'); ?>
+2.upload the file(msg shows "only JPG & PNG files are allowed"). in burp go to proxy >http history> find POST /my-account/avatar request, then send it to repeater 
+
+3.try uploading the file as : 
+	3.1. webShell.JPG.php (the server may deal with the file as php or jpg) => not working , msg shows: "only JPG & PNG files are allowed" 
+	3.2. webShell.php.JPG  => working and file uploaded successfuly , but code not be run(shows as text in response of GET files/avatars/webShell.php.JPG)
+	3.3. webShell.php%00.JPG (because the file must be followed to .imgage extension we can put null byte followed by .JPG to bypass this "%00.JPG" ) => msg shows: "The file avatars/webShell.php has been uploaded", this means that the file uploaded successfuly as php file.
+4. proxy> http history > Get/files/avatars/webShell.php%00.JPG, in its response => 400 status . send the request to repeater.
+5. in the repeater change "webShell.php%00.JPG" to "webShell.php", then send the request, the secret shows in the response.
+5. submit the secret in the lab banner.
